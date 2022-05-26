@@ -24,6 +24,12 @@ func main() {
 
     puppySearchList := readInputCsv("input.csv")
 
+    for _, puppySearch := range puppySearchList {
+        if !validBreeds[puppySearch.Breed] {
+            fmt.Printf("%s is not a valid breed, skipping\n", puppySearch.Breed)
+        }
+    }
+
     //c := colly.NewCollector()
 }
 
@@ -72,7 +78,7 @@ func createPuppySearchList(data [][]string) []PuppySearch {
     return puppySearchList
 }
 
-func readFile(filePath string) ([]string, error) {
+func readFile(filePath string) (map[string] bool, error) {
     file, err := os.Open(filePath)
     if err != nil {
         log.Fatal(err)
@@ -84,10 +90,10 @@ func readFile(filePath string) ([]string, error) {
         }
     }()
 
-    var result []string
+    result := make(map[string] bool)
     scanner := bufio.NewScanner(file)
     for scanner.Scan() {
-        result = append(result, scanner.Text())
+        result[scanner.Text()] = true
     }
     return result, scanner.Err()
 }
