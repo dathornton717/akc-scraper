@@ -5,16 +5,9 @@ import 	(
     "fmt"
     "log"
     "os"
-    "strconv"
-   // "github.com/gocolly/colly/v2"
+    //"github.com/gocolly/colly/v2"
 )
 
-type PuppySearch struct {
-    Breed string
-    Gender string
-    ZipCode string
-    Radius int
-}
 
 func main() {
     validBreeds, err := readFile("breeds.txt")
@@ -24,13 +17,21 @@ func main() {
 
     puppySearchList := readInputCsv("input.csv")
 
-    for _, puppySearch := range puppySearchList {
+    for i, puppySearch := range puppySearchList {
+        err = puppySearch.validate()
+
+        if err != nil {
+            fmt.Printf("skipping due to validation error on line %d: %s\n", i + 1, err.Error())
+        }
         if !validBreeds[puppySearch.Breed] {
             fmt.Printf("%s is not a valid breed, skipping\n", puppySearch.Breed)
+            continue
         }
-    }
 
-    //c := colly.NewCollector()
+        // c := colly.NewCollector(
+        //     colly.AllowedDomains("marketplace.akc.org"),
+        // )
+    }
 }
 
 func readInputCsv(fileName string) []PuppySearch {
@@ -65,11 +66,7 @@ func createPuppySearchList(data [][]string) []PuppySearch {
                 } else if j == 2 {
                     puppySearch.ZipCode = field
                 } else if j == 3 {
-                    radius, err := strconv.Atoi(field)
-                    if err != nil {
-                        log.Fatal(err)
-                    }
-                    puppySearch.Radius = radius
+                    puppySearch.Radius = field
                 }
             }
             puppySearchList = append(puppySearchList, puppySearch)
