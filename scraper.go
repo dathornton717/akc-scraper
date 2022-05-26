@@ -22,13 +22,13 @@ func main() {
         log.Fatal(err)
     }
 
-    puppySearchList := readInputCsv()
+    puppySearchList := readInputCsv("input.csv")
 
     //c := colly.NewCollector()
 }
 
-func readInputCsv() []PuppySearch {
-    f, err := os.Open("input.csv")
+func readInputCsv(fileName string) []PuppySearch {
+    f, err := os.Open(fileName)
     if err != nil {
         log.Fatal(err)
     }
