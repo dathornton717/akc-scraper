@@ -5,7 +5,8 @@ import 	(
     "fmt"
     "log"
     "os"
-    //"github.com/gocolly/colly/v2"
+    "strings"
+    "github.com/gocolly/colly/v2"
 )
 
 
@@ -28,9 +29,22 @@ func main() {
             continue
         }
 
-        // c := colly.NewCollector(
-        //     colly.AllowedDomains("marketplace.akc.org"),
-        // )
+        c := colly.NewCollector(
+            colly.AllowedDomains("marketplace.akc.org"),
+        )
+        c.OnRequest(func(r *colly.Request) {
+            fmt.Printf("Visiting %s\n", r.URL.String())
+        })
+        c.OnHTML("a[href]", func(e *colly.HTMLElement) {
+            link := e.Attr("href")
+            // Print link
+            fmt.Printf("Link found: %q -> %s\n", e.Text, link)
+        })
+
+        url := "https://marketplace.akc.org/puppies/"
+        url = url + strings.ReplaceAll(puppySearch.Breed, " ", "-")
+        url = url + puppySearch.createRequestParams(1)
+        c.Visit(url)
     }
 }
 

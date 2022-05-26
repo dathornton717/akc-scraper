@@ -55,19 +55,20 @@ func (puppySearch PuppySearch) validate() error {
 	return nil
 }
 
-func (puppySearch PuppySearch) createRequestParams() string {
+func (puppySearch PuppySearch) createRequestParams(page int) string {
 	result := ""
 	token := "?"
 	if puppySearch.Gender != "" {
-		result = result + token + puppySearch.Gender
+		result = result + token + "gender=" + puppySearch.Gender
 		token = "&"
 	}
 	if puppySearch.ZipCode != "" {
-		result = result + token + puppySearch.ZipCode
+		result = result + token + "location=" + puppySearch.ZipCode
 		token = "&"
 	}
 	if puppySearch.Radius != "" {
-		result = result + token + puppySearch.Radius
+		result = result + token + "radius=" + puppySearch.Radius
 	}
+	result = result + token + "page=" + strconv.Itoa(page)
 	return result
 }
