@@ -1,5 +1,6 @@
 package main
 import 	(
+    "bufio"
     "encoding/csv"
     "fmt"
     "log"
@@ -16,6 +17,17 @@ type PuppySearch struct {
 }
 
 func main() {
+    validBreeds, err := readFile("breeds.txt")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    puppySearchList := readInputCsv()
+
+    //c := colly.NewCollector()
+}
+
+func readInputCsv() []PuppySearch {
     f, err := os.Open("input.csv")
     if err != nil {
         log.Fatal(err)
@@ -31,9 +43,7 @@ func main() {
 
     puppySearchList := createPuppySearchList(data)
 
-    fmt.Printf("%+v\n", puppySearchList)
-
-    //c := colly.NewCollector()
+    return puppySearchList
 }
 
 func createPuppySearchList(data [][]string) []PuppySearch {
@@ -60,4 +70,24 @@ func createPuppySearchList(data [][]string) []PuppySearch {
         }
     }
     return puppySearchList
+}
+
+func readFile(filePath string) ([]string, error) {
+    file, err := os.Open(filePath)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    defer func() {
+        if err = file.Close(); err != nil {
+            log.Fatal(err)
+        }
+    }()
+
+    var result []string
+    scanner := bufio.NewScanner(file)
+    for scanner.Scan() {
+        result = append(result, scanner.Text())
+    }
+    return result, scanner.Err()
 }
